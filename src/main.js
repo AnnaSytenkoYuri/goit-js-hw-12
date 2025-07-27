@@ -75,8 +75,6 @@ async function onLoadMoreClick() {
     createGallery(data.hits);
     hideLoader();
 
-    smoothScroll();
-
     const totalPages = Math.ceil(data.totalHits / 15);
     if (page >= totalPages) {
       iziToast.warning({
@@ -90,6 +88,9 @@ async function onLoadMoreClick() {
       incrementPage();
       showLoadMoreButton();
     }
+
+    smoothScroll();
+
   } catch (error) {
     hideLoader();
     hideLoadMoreButton();
@@ -98,12 +99,12 @@ async function onLoadMoreClick() {
 }
 
 function smoothScroll() {
-    const galleryFirstCard = document.querySelector('.gallery .gallery-item');
-    if (galleryFirstCard) {
-      const cardHeight = galleryFirstCard.getBoundingClientRect().height;
-      window.scrollBy({
-        top: cardHeight * 2,
-        behavior: 'smooth',
-      });
-    }
-  }
+  const card = document.querySelector('.gallery-list');
+  if (!card) return;
+  const {height} = card.getBoundingClientRect();
+  window.scrollBy({
+    top: height * 2,
+    left: 0,
+    behavior: 'smooth',
+  });
+}
