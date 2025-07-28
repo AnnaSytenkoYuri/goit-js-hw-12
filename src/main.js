@@ -1,11 +1,6 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
-import {
-  getImagesByQuery,
-  incrementPage,
-  page,
-  resetPage,
-} from './js/pixabay-api';
+import { getImagesByQuery } from './js/pixabay-api';
 import {
   clearGallery,
   createGallery,
@@ -19,6 +14,7 @@ import {
 const form = document.querySelector('.form');
 const input = form.elements['search-text'];
 let currentQuery = '';
+let page = 1;
 
 form.addEventListener('submit', handleSubmit);
 
@@ -36,13 +32,13 @@ async function handleSubmit(event) {
     return;
   }
   currentQuery = query;
-  resetPage();
+  page = 1;
   clearGallery();
   showLoader();
   hideLoadMoreButton();
 
   try {
-    const data = await getImagesByQuery(currentQuery);
+    const data = await getImagesByQuery(currentQuery, page);
 
     if (data.hits.length === 0) {
       hideLoader();
@@ -55,7 +51,6 @@ async function handleSubmit(event) {
     }
     createGallery(data.hits);
     hideLoader();
-    incrementPage();
 
     const totalPages = Math.ceil(data.totalHits / 15);
     if (page < totalPages) {
@@ -63,7 +58,7 @@ async function handleSubmit(event) {
     } else {
       hideLoadMoreButton();
     }
-
+    page++;
     form.reset();
   } catch (error) {
     hideLoader();
@@ -78,7 +73,7 @@ async function onLoadMoreClick() {
   showLoader();
 
   try {
-    const data = await getImagesByQuery(currentQuery);
+    const data = await getImagesByQuery(currentQuery, page);
 
     if (data.hits.length === 0) {
       hideLoader();
@@ -92,7 +87,6 @@ async function onLoadMoreClick() {
     }
     createGallery(data.hits);
     hideLoader();
-    incrementPage();
 
     const totalPages = Math.ceil(data.totalHits / 15);
     if (page >= totalPages) {
@@ -105,7 +99,7 @@ async function onLoadMoreClick() {
     } else {
       showLoadMoreButton();
     }
-
+    page++;
     smoothScroll();
   } catch (error) {
     hideLoader();

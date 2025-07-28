@@ -4,9 +4,8 @@ const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '19018033-87a1a51fb4261bc6ee99901a2';
 
 const PER_PAGE = 15;
-export let page = 1;
 
-export async function getImagesByQuery(query) {
+export async function getImagesByQuery(query, page) {
   try {
     const response = await axios.get(BASE_URL, {
       params: {
@@ -24,11 +23,4 @@ export async function getImagesByQuery(query) {
     console.log('Помилка при отриманні зображень:', error.message);
     throw error;
   }
-};
- export function resetPage() {
-    page = 1;
- }
-
- export function incrementPage() {
-    page++;
- }
+}
